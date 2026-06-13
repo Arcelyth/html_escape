@@ -55,7 +55,7 @@ def main():
     lines.append("/// Source: https://html.spec.whatwg.org/entities.json")
     lines.append("/// DO NOT EDIT MANUALLY.")
     lines.append(
-        f"pub let html_entities : Array[(Bytes, String)] = ["
+        f"pub let html_entities : Array[(String, String)] = ["
     )
 
     for entity_name in sorted(canonical_entities):
@@ -65,7 +65,7 @@ def main():
         characters = moonbit_escape(characters)
 
         lines.append(
-            f'  (b"{entity_name}", "{characters}"),'
+            f'  ("{entity_name}", "{characters}"),'
         )
 
     lines.append("]")

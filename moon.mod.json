@@ -5,6 +5,8 @@
   "readme": "README.mbt.md",
   "repository": "https://github.com/Arcelyth/html_escape",
   "license": "MIT",
-  "keywords": ["html"],
+  "keywords": [
+    "html"
+  ],
   "description": "Escaping/unescaping HTML entities."
 }
