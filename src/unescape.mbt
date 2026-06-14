@@ -1,5 +1,5 @@
 ///|
-pub enum UnescapeState {
+enum UnescapeState {
   Normal
   AfterAmp
   Named
@@ -70,6 +70,31 @@ fn resolve_legacy_entity(input: String, begin: Int, end: Int) -> Option[String] 
 }
 
 ///|
+/// Decodes HTML entities contained in a string.
+///
+/// Supported entity forms:
+///
+/// Named entities:
+/// - `&amp;`
+/// - `&lt;`
+/// - `&gt;`
+/// - and all entries contained in `html_entities`
+///
+/// Decimal numeric entities:
+/// - `&#38;`
+/// - `&#160;`
+///
+/// Hexadecimal numeric entities:
+/// - `&#x26;`
+/// - `&#XA0;`
+///
+/// Legacy entities without semicolons:
+/// - `&amp`
+/// - `&lt`
+/// - `&gt`
+/// - `&quot`
+/// - `&apos`
+/// - `&nbsp`
 pub fn unescape(text : String) -> String {
   let len = text.length()
   let mut state = UnescapeState::Normal
