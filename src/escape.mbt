@@ -78,18 +78,33 @@ pub fn escape(text : String, mode : EscapeMode) -> String {
   }
   let len = text.length()
   let buf = StringBuilder::new(size_hint=len+16)
-  buf.write(text[0:first])
+  
+  buf.write_stringview(text[0:first])
+  
+  let mut start = first
   let mut i = first
   while i < len {
     let c = text[i]
     match escape_char(mode, c) {
-      Some(en) => buf.write_string(en)
-      None => buf.write(text[i:i+1])
+      Some(en) => {
+        if i > start {
+          buf.write_stringview(text[start:i])
+        }
+        buf.write_stringview(en)
+        start = i + 1
+      }
+      None => ()
     }
     i += 1
   }
+  
+  if i > start {
+    buf.write_stringview(text[start:i])
+  }
+  
   buf.to_string()
 }
+
 
 ///|
 pub fn escape_text_minimal(text : String) -> String {
