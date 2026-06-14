@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-INPUT_JSON = "./src/entities.json"
+INPUT_JSON = "./res/entities.json"
 OUTPUT_MBT = "./src/entities.mbt"
 
 def moonbit_escape(s: str) -> str:
