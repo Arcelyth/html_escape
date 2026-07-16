@@ -24,54 +24,60 @@ pub(all) enum EscapeMode {
 
 ///|
 /// Returns the HTML escape sequence corresponding to the given character under the specified escape mode.
-fn escape_char(mode : EscapeMode, c : UInt16) -> Option[String] {
+fn escape_char(mode : EscapeMode, c : UInt16) -> String? {
   match mode {
-    EscapeMode::TextMinimal => match c {
-      '&' => Some("&amp;")
-      '<' => Some("&lt;")
-      _ => None
-    }
-    EscapeMode::Text => match c {
-      '&' => Some("&amp;")
-      '<' => Some("&lt;")
-      '>' => Some("&gt;")
-      _ => None
-    }
-    EscapeMode::DoubleQuoted => match c {
-      '&' => Some("&amp;")
-      '<' => Some("&lt;")
-      '>' => Some("&gt;")
-      '"' => Some("&quot;")
-      _ => None
-    }
-    EscapeMode::SingleQuoted => match c {
-      '&' => Some("&amp;")
-      '<' => Some("&lt;")
-      '>' => Some("&gt;")
-      '\'' => Some("&#x27;")
-      _ => None
-    }
-    EscapeMode::Quoted => match c {
-      '&' => Some("&amp;")
-      '<' => Some("&lt;")
-      '>' => Some("&gt;")
-      '"' => Some("&quot;")
-      '\'' => Some("&#x27;")
-      _ => None
-    }
-    EscapeMode::Safe => match c {
-      '&' => Some("&amp;")
-      '<' => Some("&lt;")
-      '>' => Some("&gt;")
-      '"' => Some("&quot;")
-      '\'' => Some("&#x27;")
-      '/' => Some("&#x2F;")
-      _ => None
-    }
+    EscapeMode::TextMinimal =>
+      match c {
+        '&' => Some("&amp;")
+        '<' => Some("&lt;")
+        _ => None
+      }
+    EscapeMode::Text =>
+      match c {
+        '&' => Some("&amp;")
+        '<' => Some("&lt;")
+        '>' => Some("&gt;")
+        _ => None
+      }
+    EscapeMode::DoubleQuoted =>
+      match c {
+        '&' => Some("&amp;")
+        '<' => Some("&lt;")
+        '>' => Some("&gt;")
+        '"' => Some("&quot;")
+        _ => None
+      }
+    EscapeMode::SingleQuoted =>
+      match c {
+        '&' => Some("&amp;")
+        '<' => Some("&lt;")
+        '>' => Some("&gt;")
+        '\'' => Some("&#x27;")
+        _ => None
+      }
+    EscapeMode::Quoted =>
+      match c {
+        '&' => Some("&amp;")
+        '<' => Some("&lt;")
+        '>' => Some("&gt;")
+        '"' => Some("&quot;")
+        '\'' => Some("&#x27;")
+        _ => None
+      }
+    EscapeMode::Safe =>
+      match c {
+        '&' => Some("&amp;")
+        '<' => Some("&lt;")
+        '>' => Some("&gt;")
+        '"' => Some("&quot;")
+        '\'' => Some("&#x27;")
+        '/' => Some("&#x2F;")
+        _ => None
+      }
   }
 }
 
-///| 
+///|
 fn first_escape_pos(text : String, mode : EscapeMode) -> Int {
   let len = text.length()
   let mut i = 0
@@ -88,15 +94,15 @@ fn first_escape_pos(text : String, mode : EscapeMode) -> Int {
 ///|
 /// Escapes a string according to the specified HTML escaping mode.
 pub fn escape(text : String, mode : EscapeMode) -> String {
-  let first = first_escape_pos(text, mode) 
+  let first = first_escape_pos(text, mode)
   if first < 0 {
     return text
   }
   let len = text.length()
-  let buf = StringBuilder::new(size_hint=len+16)
-  
+  let buf = StringBuilder::new(size_hint=len + 16)
+
   buf.write_stringview(text[0:first])
-  
+
   let mut start = first
   let mut i = first
   while i < len {
@@ -113,14 +119,13 @@ pub fn escape(text : String, mode : EscapeMode) -> String {
     }
     i += 1
   }
-  
+
   if i > start {
     buf.write_stringview(text[start:i])
   }
-  
+
   buf.to_string()
 }
-
 
 ///|
 /// Escapes a string for use in HTML text content using the

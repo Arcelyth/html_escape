@@ -10,7 +10,12 @@ enum UnescapeState {
 } derive(Eq)
 
 ///|
-fn compare_entity_range(entity : String, input : String, begin : Int, end : Int) -> Int {
+fn compare_entity_range(
+  entity : String,
+  input : String,
+  begin : Int,
+  end : Int,
+) -> Int {
   let elen = entity.length()
   let ilen = end - begin
   let n = if elen < ilen { elen } else { ilen }
@@ -19,16 +24,26 @@ fn compare_entity_range(entity : String, input : String, begin : Int, end : Int)
   while i < n {
     let a = entity[i]
     let b = input[begin + i]
-    if a < b { return -1 }
-    if a > b { return 1 }
+    if a < b {
+      return -1
+    }
+    if a > b {
+      return 1
+    }
     i += 1
   }
 
-  if elen < ilen { -1 } else if elen > ilen { 1 } else { 0 }
+  if elen < ilen {
+    -1
+  } else if elen > ilen {
+    1
+  } else {
+    0
+  }
 }
 
 ///|
-fn find_named_entity(input : String, begin : Int, end : Int) -> Option[String] {
+fn find_named_entity(input : String, begin : Int, end : Int) -> String? {
   let mut left = 0
   let mut right = html_entities.length()
 
@@ -52,19 +67,31 @@ fn find_named_entity(input : String, begin : Int, end : Int) -> Option[String] {
 }
 
 ///|
-fn resolve_legacy_entity(input: String, begin: Int, end: Int) -> Option[String] {
+fn resolve_legacy_entity(input : String, begin : Int, end : Int) -> String? {
   let len = end - begin
   if len == 2 {
     let s = input[begin:end]
-    if s == "lt" { return Some("<") }
-    if s == "gt" { return Some(">") }
+    if s == "lt" {
+      return Some("<")
+    }
+    if s == "gt" {
+      return Some(">")
+    }
   } else if len == 3 {
-    if input[begin:end] == "amp" { return Some("&") }
+    if input[begin:end] == "amp" {
+      return Some("&")
+    }
   } else if len == 4 {
     let s = input[begin:end]
-    if s == "quot" { return Some("\"") }
-    if s == "apos" { return Some("'") }
-    if s == "nbsp" { return Some("\u00A0") }
+    if s == "quot" {
+      return Some("\"")
+    }
+    if s == "apos" {
+      return Some("'")
+    }
+    if s == "nbsp" {
+      return Some("\u00A0")
+    }
   }
   None
 }
@@ -104,7 +131,7 @@ pub fn unescape(text : String) -> String {
   let mut found = false
   let buf = StringBuilder::new(size_hint=len)
 
-  let flush_text = fn(end_idx: Int) {
+  let flush_text = fn(end_idx : Int) {
     if end_idx > copy_start {
       buf.write(text[copy_start:end_idx])
     }
@@ -114,23 +141,19 @@ pub fn unescape(text : String) -> String {
     let c = text[i]
 
     match state {
-      UnescapeState::Normal => {
+      UnescapeState::Normal =>
         if c == '&' {
           entity_start = i
           state = UnescapeState::AfterAmp
         }
-      }
-
-      UnescapeState::AfterAmp => {
+      UnescapeState::AfterAmp =>
         match c {
           '#' => state = UnescapeState::AfterHash
           ';' => state = UnescapeState::Normal
-          '&' => { entity_start = i }
+          '&' => entity_start = i
           _ => state = UnescapeState::Named
         }
-      }
-
-      UnescapeState::Named => {
+      UnescapeState::Named =>
         if c == ';' {
           match find_named_entity(text, entity_start + 1, i) {
             Some(decoded) => {
@@ -154,7 +177,9 @@ pub fn unescape(text : String) -> String {
           }
           entity_start = i
           state = UnescapeState::AfterAmp
-        } else if !((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')) {
+        } else if !((c >= 'a' && c <= 'z') ||
+          (c >= 'A' && c <= 'Z') ||
+          (c >= '0' && c <= '9')) {
           match resolve_legacy_entity(text, entity_start + 1, i) {
             Some(decoded) => {
               found = true
@@ -166,24 +191,25 @@ pub fn unescape(text : String) -> String {
           }
           state = UnescapeState::Normal
         }
-      }
-
-      UnescapeState::AfterHash => {
+      UnescapeState::AfterHash =>
         match c {
           'x' | 'X' => state = UnescapeState::AfterHexPrefix
           ';' => state = UnescapeState::Normal
-          '&' => { entity_start = i; state = UnescapeState::AfterAmp }
-          _ => {
-            if c >= '0' && c <= '9' { state = UnescapeState::Decimal } 
-            else { state = UnescapeState::Normal }
+          '&' => {
+            entity_start = i
+            state = UnescapeState::AfterAmp
           }
+          _ =>
+            if c >= '0' && c <= '9' {
+              state = UnescapeState::Decimal
+            } else {
+              state = UnescapeState::Normal
+            }
         }
-      }
-
-      UnescapeState::Decimal => {
+      UnescapeState::Decimal =>
         if c == ';' {
           match parse_decimal(text, entity_start + 2, i) {
-            Some(value) => {
+            Some(value) =>
               match Int::to_char(value) {
                 Some(ch) => {
                   found = true
@@ -193,32 +219,29 @@ pub fn unescape(text : String) -> String {
                 }
                 None => ()
               }
-            }
             None => ()
           }
           state = UnescapeState::Normal
         } else if !(c >= '0' && c <= '9') {
           state = UnescapeState::Normal
         }
-      }
-
-      UnescapeState::AfterHexPrefix => {
+      UnescapeState::AfterHexPrefix =>
         if c == ';' {
           state = UnescapeState::Normal
         } else if c == '&' {
           entity_start = i
           state = UnescapeState::AfterAmp
-        } else if (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F') {
+        } else if (c >= '0' && c <= '9') ||
+          (c >= 'a' && c <= 'f') ||
+          (c >= 'A' && c <= 'F') {
           state = UnescapeState::Hex
         } else {
           state = UnescapeState::Normal
         }
-      }
-
-      UnescapeState::Hex => {
+      UnescapeState::Hex =>
         if c == ';' {
           match parse_hex(text, entity_start + 3, i) {
-            Some(value) => {
+            Some(value) =>
               match Int::to_char(value) {
                 Some(ch) => {
                   found = true
@@ -228,14 +251,14 @@ pub fn unescape(text : String) -> String {
                 }
                 None => ()
               }
-            }
             None => ()
           }
           state = UnescapeState::Normal
-        } else if !((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')) {
+        } else if !((c >= '0' && c <= '9') ||
+          (c >= 'a' && c <= 'f') ||
+          (c >= 'A' && c <= 'F')) {
           state = UnescapeState::Normal
         }
-      }
     }
     i += 1
   }

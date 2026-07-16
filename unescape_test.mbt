@@ -35,7 +35,10 @@ test "unescape apos" {
 
 ///|
 test "unescape multiple named entities" {
-  assert_eq(unescape("&lt;div&gt;hello&amp;world&lt;/div&gt;"), "<div>hello&world</div>")
+  assert_eq(
+    unescape("&lt;div&gt;hello&amp;world&lt;/div&gt;"),
+    "<div>hello&world</div>",
+  )
 }
 
 ///|
@@ -130,7 +133,10 @@ test "adjacent entities" {
 
 ///|
 test "unescape html fragment" {
-  assert_eq(unescape("&lt;script&gt;alert(1)&lt;/script&gt;"), "<script>alert(1)</script>")
+  assert_eq(
+    unescape("&lt;script&gt;alert(1)&lt;/script&gt;"),
+    "<script>alert(1)</script>",
+  )
 }
 
 ///|

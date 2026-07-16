@@ -40,7 +40,10 @@ test "escape_double_quoted quote" {
 
 ///|
 test "escape_double_quoted html" {
-  assert_eq(escape_double_quoted("\" onclick=\"alert(1)"), "&quot; onclick=&quot;alert(1)")
+  assert_eq(
+    escape_double_quoted("\" onclick=\"alert(1)"),
+    "&quot; onclick=&quot;alert(1)",
+  )
 }
 
 ///|
@@ -50,7 +53,10 @@ test "escape_single_quoted quote" {
 
 ///|
 test "escape_single_quoted html" {
-  assert_eq(escape_single_quoted("' onclick='alert(1)"), "&#x27; onclick=&#x27;alert(1)")
+  assert_eq(
+    escape_single_quoted("' onclick='alert(1)"),
+    "&#x27; onclick=&#x27;alert(1)",
+  )
 }
 
 ///|
@@ -100,12 +106,18 @@ test "escape consecutive tags" {
 
 ///|
 test "xss script" {
-  assert_eq(escape_safe("<script>alert('xss')</script>"), "&lt;script&gt;alert(&#x27;xss&#x27;)&lt;&#x2F;script&gt;")
+  assert_eq(
+    escape_safe("<script>alert('xss')</script>"),
+    "&lt;script&gt;alert(&#x27;xss&#x27;)&lt;&#x2F;script&gt;",
+  )
 }
 
 ///|
 test "xss img" {
-  assert_eq(escape_quoted("\" onerror=\"alert(1)"), "&quot; onerror=&quot;alert(1)")
+  assert_eq(
+    escape_quoted("\" onerror=\"alert(1)"),
+    "&quot; onerror=&quot;alert(1)",
+  )
 }
 
 ///|

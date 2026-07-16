@@ -1,21 +1,27 @@
 ///|
-pub fn parse_decimal(input : String, begin : Int, end : Int) -> Option[Int] {
-  if begin == end { return None }
+pub fn parse_decimal(input : String, begin : Int, end : Int) -> Int? {
+  if begin == end {
+    return None
+  }
   let mut val = 0
   let mut i = begin
   while i < end {
     let c = input[i]
     if c >= '0' && c <= '9' {
       val = val * 10 + (c.to_int() - '0'.to_int())
-    } else { return None }
+    } else {
+      return None
+    }
     i += 1
   }
   Some(val)
 }
 
 ///|
-pub fn parse_hex(input : String, begin : Int, end : Int) -> Option[Int] {
-  if begin == end { return None }
+pub fn parse_hex(input : String, begin : Int, end : Int) -> Int? {
+  if begin == end {
+    return None
+  }
   let mut val = 0
   let mut i = begin
   while i < end {
@@ -26,11 +32,11 @@ pub fn parse_hex(input : String, begin : Int, end : Int) -> Option[Int] {
       c.to_int() - 'a'.to_int() + 10
     } else if c >= 'A' && c <= 'F' {
       c.to_int() - 'A'.to_int() + 10
-    } else { return None }
+    } else {
+      return None
+    }
     val = val * 16 + digit
     i += 1
   }
   Some(val)
 }
-
-

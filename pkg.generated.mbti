@@ -1,0 +1,44 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Arcelyth/html_escape"
+
+// Values
+pub fn escape(String, EscapeMode) -> String
+
+pub fn escape_double_quoted(String) -> String
+
+pub fn escape_quoted(String) -> String
+
+pub fn escape_safe(String) -> String
+
+pub fn escape_single_quoted(String) -> String
+
+pub fn escape_text(String) -> String
+
+pub fn escape_text_minimal(String) -> String
+
+pub let html_entities : Array[(String, String)]
+
+pub fn parse_decimal(String, Int, Int) -> Int?
+
+pub fn parse_hex(String, Int, Int) -> Int?
+
+pub fn unescape(String) -> String
+
+// Errors
+
+// Types and methods
+pub(all) enum EscapeMode {
+  TextMinimal
+  Text
+  DoubleQuoted
+  SingleQuoted
+  Quoted
+  Safe
+}
+
+type UnescapeState derive(Eq)
+
+// Type aliases
+
+// Traits
+
