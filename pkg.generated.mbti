@@ -18,9 +18,9 @@ pub fn escape_text_minimal(String) -> String
 
 pub let html_entities : Array[(String, String)]
 
-pub fn parse_decimal(String, Int, Int) -> Int?
+pub fn parse_decimal(String, Int32, Int32) -> Int32?
 
-pub fn parse_hex(String, Int, Int) -> Int?
+pub fn parse_hex(String, Int32, Int32) -> Int32?
 
 pub fn unescape(String) -> String
 
