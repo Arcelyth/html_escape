@@ -1,5 +1,5 @@
 ///|
-pub fn parse_decimal(input : String, begin : Int, end : Int) -> Int? {
+pub fn parse_decimal(input : String, begin : Int32, end : Int32) -> Int32? {
   if begin == end {
     return None
   }
@@ -18,7 +18,7 @@ pub fn parse_decimal(input : String, begin : Int, end : Int) -> Int? {
 }
 
 ///|
-pub fn parse_hex(input : String, begin : Int, end : Int) -> Int? {
+pub fn parse_hex(input : String, begin : Int32, end : Int32) -> Int32? {
   if begin == end {
     return None
   }

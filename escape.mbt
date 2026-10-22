@@ -78,7 +78,7 @@ fn escape_char(mode : EscapeMode, c : UInt16) -> String? {
 }
 
 ///|
-fn first_escape_pos(text : String, mode : EscapeMode) -> Int {
+fn first_escape_pos(text : String, mode : EscapeMode) -> Int32 {
   let len = text.length()
   let mut i = 0
   while i < len {
@@ -99,7 +99,7 @@ pub fn escape(text : String, mode : EscapeMode) -> String {
     return text
   }
   let len = text.length()
-  let buf = StringBuilder::new(size_hint=len + 16)
+  let buf = StringBuilder(size_hint=len + 16)
 
   buf.write_stringview(text[0:first])
 

@@ -1,4 +1,14 @@
 ///|
+using @html_escape {
+  escape_text_minimal,
+  escape_text,
+  escape_safe,
+  escape_quoted,
+  escape_double_quoted,
+  escape_single_quoted,
+}
+
+///|
 test "escape_text_minimal empty" {
   assert_eq(escape_text_minimal(""), "")
 }

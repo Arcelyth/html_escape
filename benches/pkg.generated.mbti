@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "Arcelyth/html_escape/bench"
+package "Arcelyth/html_escape/benches"
 
 // Values
 
@@ -10,4 +10,3 @@ package "Arcelyth/html_escape/bench"
 // Type aliases
 
 // Traits
-

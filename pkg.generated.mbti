@@ -36,9 +36,16 @@ pub(all) enum EscapeMode {
   Safe
 }
 
-type UnescapeState derive(Eq)
+pub enum UnescapeState {
+  Normal
+  AfterAmp
+  Named
+  AfterHash
+  Decimal
+  AfterHexPrefix
+  Hex
+}
 
 // Type aliases
 
 // Traits
-

@@ -1,4 +1,7 @@
 ///|
+using @html_escape {unescape}
+
+///|
 test "unescape empty string" {
   assert_eq(unescape(""), "")
 }

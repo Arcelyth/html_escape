@@ -1,5 +1,5 @@
 ///|
-enum UnescapeState {
+pub enum UnescapeState {
   Normal
   AfterAmp
   Named
@@ -7,15 +7,15 @@ enum UnescapeState {
   Decimal
   AfterHexPrefix
   Hex
-} derive(Eq)
+}
 
 ///|
 fn compare_entity_range(
   entity : String,
   input : String,
-  begin : Int,
-  end : Int,
-) -> Int {
+  begin : Int32,
+  end : Int32,
+) -> Int32 {
   let elen = entity.length()
   let ilen = end - begin
   let n = if elen < ilen { elen } else { ilen }
@@ -43,7 +43,7 @@ fn compare_entity_range(
 }
 
 ///|
-fn find_named_entity(input : String, begin : Int, end : Int) -> String? {
+fn find_named_entity(input : String, begin : Int32, end : Int32) -> String? {
   let mut left = 0
   let mut right = html_entities.length()
 
@@ -67,7 +67,7 @@ fn find_named_entity(input : String, begin : Int, end : Int) -> String? {
 }
 
 ///|
-fn resolve_legacy_entity(input : String, begin : Int, end : Int) -> String? {
+fn resolve_legacy_entity(input : String, begin : Int32, end : Int32) -> String? {
   let len = end - begin
   if len == 2 {
     let s = input[begin:end]
@@ -129,9 +129,9 @@ pub fn unescape(text : String) -> String {
   let mut copy_start = 0
   let mut i = 0
   let mut found = false
-  let buf = StringBuilder::new(size_hint=len)
+  let buf = StringBuilder(size_hint=len)
 
-  let flush_text = fn(end_idx : Int) {
+  let flush_text = fn(end_idx : Int32) {
     if end_idx > copy_start {
       buf.write(text[copy_start:end_idx])
     }
@@ -210,7 +210,7 @@ pub fn unescape(text : String) -> String {
         if c == ';' {
           match parse_decimal(text, entity_start + 2, i) {
             Some(value) =>
-              match Int::to_char(value) {
+              match Int32::to_char(value) {
                 Some(ch) => {
                   found = true
                   flush_text(entity_start)
@@ -242,7 +242,7 @@ pub fn unescape(text : String) -> String {
         if c == ';' {
           match parse_hex(text, entity_start + 3, i) {
             Some(value) =>
-              match Int::to_char(value) {
+              match Int32::to_char(value) {
                 Some(ch) => {
                   found = true
                   flush_text(entity_start)
@@ -267,7 +267,7 @@ pub fn unescape(text : String) -> String {
     return text
   }
 
-  if state == UnescapeState::Named {
+  if state is UnescapeState::Named {
     match resolve_legacy_entity(text, entity_start + 1, len) {
       Some(decoded) => {
         flush_text(entity_start)
